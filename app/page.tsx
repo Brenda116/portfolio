@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { IconType } from "react-icons";
-import { FaCss3Alt, FaDatabase, FaPalette, FaPenNib } from "react-icons/fa";
+import {
+  FaCss3Alt, FaDatabase, FaEnvelope, FaGithub, FaInstagram, FaLinkedinIn,
+  FaPalette, FaPenNib,
+} from "react-icons/fa";
 import { PiCursorClickFill } from "react-icons/pi";
 import {
   SiDart, SiFigma, SiFlutter, SiJavascript, SiNextdotjs,
@@ -13,6 +16,7 @@ import {
 const GITHUB = "https://github.com/Brenda116";
 const LINKEDIN = "https://linkedin.com/in/brenda-anastasya16/";
 const EMAIL = "anastasyabrenda16@gmail.com";
+const INSTAGRAM = "https://www.instagram.com/brnndtsy/";
 const CV = "/Brenda_Anastasya_CV.pdf";
 const PHOTO = "/profile.jpeg";
 
@@ -20,7 +24,7 @@ type Project = {
   id: string; file: string; title: string; date: string; role: string;
   blurb: string; desc: string; did: string[]; stack: string[];
   tone: keyof typeof TONE; sticker?: string;
-  repo?: string; demo?: string; paper?: string; shots: string[];
+  repo?: string; demo?: string; paper?: string; video?: string; shots: string[];
   metric?: string; metricLabel?: string;
 };
 
@@ -40,9 +44,9 @@ const projects: Project[] = [
     file: "hog_svm_vs_cnn/",
     title: "Candidate Confidence Classification",
     date: "Jun 2026",
-    role: "Author",
+    role: "Brenda Anastasya",
     blurb: "HOG + SVM against a CNN on 2,366 interview frames. The simpler model won.",
-    desc: "Judging how confident a candidate looks in an interview is subjective. This study automates it from facial expression images and compares two approaches: HOG features with an SVM, and an end-to-end CNN.",
+    desc: "Judging candidate confidence during interviews is inherently subjective. This machine learning research project automates the assessment using facial expression images, comparing two approaches: HOG features with an SVM versus an end-to-end CNN.",
     did: [
       "Cleaned the public Mendeley dataset from 4,754 frames to 2,366 labeled images (1,469 unconfident, 897 confident).",
       "Extracted 8,100 HOG features per 128×128 image and tested Linear, RBF and Polynomial SVM kernels.",
@@ -72,10 +76,11 @@ const projects: Project[] = [
     ],
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "PostgreSQL"],
     tone: "blue",
-    sticker: "real client ♡",
+    sticker: "website ♡",
     repo: "https://github.com/Brenda116/inventix-fe",
-    demo: "", // isi URL Inventix
-    shots: ["/projects/inventix-1.png", "/projects/inventix-2.png", "/projects/inventix-3.png"],
+    demo: "https://inventix-fe.vercel.app/",
+    video: "https://drive.google.com/file/d/1jJuFcIICqW-01hXAAzB10zb77qG-HhN9/view?usp=sharing",
+    shots: ["/projects/inventix-1.png", "/projects/inventix-2.png"],
   },
   {
     id: "azzura",
@@ -94,7 +99,11 @@ const projects: Project[] = [
     tone: "lavender",
     sticker: "mobile app ✦",
     repo: "https://github.com/Brenda116/azzura-rewards-mobile",
-    shots: ["/projects/azzura-1.png", "/projects/azzura-2.png", "/projects/azzura-3.png"],
+    video: "https://www.youtube.com/watch?v=gjMXoOa6-eU",
+    shots: ["/projects/azzura-1.png", "/projects/azzura-2.png", "/projects/azzura-3.png", "/projects/azzura-4.png",
+      "/projects/azzura-5.png", "/projects/azzura-6.png", "/projects/azzura-7.png", "/projects/azzura-8.png", "/projects/azzura-9.png",
+      "/projects/azzura-10.png", "/projects/azzura-11.png", "/projects/azzura-12.png"
+    ],
   },
   {
     id: "notte",
@@ -102,7 +111,7 @@ const projects: Project[] = [
     title: "Notte Azzura Pizza",
     date: "Nov - Dec 2025",
     role: "Frontend developer & UI/UX designer",
-    blurb: "Restaurant website with custom landing animations.",
+    blurb: "A responsive restaurant website with animations.",
     desc: "A responsive web app for a pizza restaurant, co-developed with Next.js and TypeScript.",
     did: [
       "Built 5 informational pages.",
@@ -180,6 +189,69 @@ function ComingSoon({ className = "" }: { className?: string }) {
   );
 }
 
+const STACK_STYLE: Record<string, { bg: string; border: string; chip: string; ink: string; bow: keyof typeof BOW; deco: string; place: string }> = {
+  "Machine learning and data": {
+    bg: "bg-[#f4effb]", border: "border-[#d9c9f0]", chip: "bg-[#e3d8f4]", ink: "text-[#7a62a8]",
+    bow: "lilac", deco: "✦", place: "lg:col-start-1 lg:row-start-1",
+  },
+  "Web and mobile": {
+    bg: "bg-[#eef6ec]", border: "border-[#c9dcc6]", chip: "bg-[#d3e5d0]", ink: "text-[#4f7a5a]",
+    bow: "blue", deco: "✿", place: "lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1",
+  },
+  Design: {
+    bg: "bg-[#fdf6d8]", border: "border-[#f0dc9a]", chip: "bg-[#fbeab0]", ink: "text-[#d0476f]",
+    bow: "rose", deco: "♡", place: "lg:col-start-1 lg:row-start-2",
+  },
+};
+
+function StackPanel({ name }: { name: string }) {
+  const st = STACK_STYLE[name];
+  return (
+    <div className={`relative rounded-[2rem] border-2 border-dashed p-5 sm:p-6 ${st.bg} ${st.border} ${st.place}`}>
+      <span aria-hidden className={`twinkle absolute right-5 top-4 text-xl ${st.ink}`}>{st.deco}</span>
+      <div className="flex items-center gap-2">
+        <Bow tone={st.bow} className="h-6 w-9 shrink-0" />
+        <h3 className={`serif text-2xl ${st.ink}`}>{name.replace(" and ", " & ")}</h3>
+      </div>
+      <ul className="mt-5 flex flex-wrap gap-3">
+        {stackGroups[name].map((s, n) => {
+          const Icon = ICONS[s];
+          return (
+            <li
+              key={s}
+              className={`flex w-[88px] flex-col items-center gap-2 rounded-3xl bg-white/80 px-1 py-3 shadow-sm shadow-[#9a8fb5]/25 transition duration-300 hover:-translate-y-1.5 hover:rotate-0 hover:bg-white ${n % 2 ? "rotate-2" : "-rotate-2"}`}
+            >
+              <span className={`flex h-11 w-11 items-center justify-center rounded-full ${st.chip} ${st.ink}`}>
+                {Icon ? <Icon aria-hidden className="text-2xl" /> : null}
+              </span>
+              <span className="mono text-center text-[11px] leading-4 text-[#5c4a57]">{s}</span>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+function LaceDivider() {
+  return (
+    <div aria-hidden className="relative mt-24">
+      <div className="h-2 w-full bg-[#e3d8f4]" />
+      <div
+        className="h-3 w-full"
+        style={{
+          backgroundImage: "radial-gradient(circle at 12px 0, #f9c9d5 7px, #e3d8f4 8px, #e3d8f4 11px, transparent 12px)",
+          backgroundSize: "24px 12px",
+          backgroundRepeat: "repeat-x",
+        }}
+      />
+      <Bow tone="rose" className="absolute -top-7 left-1/2 h-14 w-20 -translate-x-1/2" />
+      <span className="twinkle absolute -top-4 left-[18%] text-xl text-[#e8c75a]">✦</span>
+      <span className="twinkle absolute -top-4 right-[18%] text-xl text-[#e07a9a]" style={{ animationDelay: "1.2s" }}>♡</span>
+    </div>
+  );
+}
+
 function Pearls() {
   return (
     <div aria-hidden className="mt-16 flex justify-center gap-2">
@@ -200,12 +272,13 @@ function Tech({ name }: { name: string }) {
   );
 }
 
-function Shot({ src, alt, fallback, fit = "cover" }: { src: string; alt: string; fallback?: React.ReactNode; fit?: "cover" | "contain" }) {  const [bad, setBad] = useState(false);
+function Shot({ src, alt, fallback, fit = "cover" }: { src: string; alt: string; fallback?: React.ReactNode; fit?: "cover" | "contain" }) {
+  const [bad, setBad] = useState(false);
   if (bad) {
     return (
       fallback ?? (
         <div className="mono flex h-full min-h-40 w-full items-center justify-center bg-[#e9f0f8] p-4 text-center text-[11px] text-[#74687a]">
-          Tambahkan gambar: public{src}
+          Tambah gambar masuk ke: public{src}
         </div>
       )
     );
@@ -213,17 +286,49 @@ function Shot({ src, alt, fallback, fit = "cover" }: { src: string; alt: string;
   return <img src={src} alt={alt} onError={() => setBad(true)} className={`h-full w-full ${fit === "contain" ? "object-contain" : "object-cover"}`} />;
 }
 
+function videoEmbed(url: string) {
+  const yt = url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([\w-]{11})/);
+  if (yt) return `https://www.youtube-nocookie.com/embed/${yt[1]}`;
+  if (url.includes("drive.google.com")) {
+    const dr = url.match(/\/d\/([\w-]+)/) || url.match(/[?&]id=([\w-]+)/);
+    if (dr) return `https://drive.google.com/file/d/${dr[1]}/preview`;
+  }
+  return null;
+}
+
 function CaseFile({ p, onClose }: { p: Project; onClose: () => void }) {
   const [i, setI] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const embed = p.video ? videoEmbed(p.video) : null;
+  const [view, setView] = useState<"video" | "shots">(embed ? "video" : "shots");
+  const thumbs = useRef<HTMLDivElement>(null);
+  const total = p.shots.length;
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight" && view === "shots") setI((v) => (v + 1) % p.shots.length);
+      if (e.key === "ArrowLeft" && view === "shots") setI((v) => (v - 1 + p.shots.length) % p.shots.length);
+    };
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [onClose]);
+  }, [onClose, p.shots.length, view]);
+
+  useEffect(() => {
+    if (total < 2 || paused || view !== "shots") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const t = setTimeout(() => setI((v) => (v + 1) % total), 4000);
+    return () => clearTimeout(t);
+  }, [i, paused, total, view]);
+
+  useEffect(() => {
+    const box = thumbs.current;
+    const el = box?.children[i] as HTMLElement | undefined;
+    if (box && el) box.scrollTo({ left: el.offsetLeft - box.clientWidth / 2 + el.clientWidth / 2, behavior: "smooth" });
+  }, [i]);
 
   const btn = "mono rounded-full px-5 py-2 text-xs font-medium";
   return (
@@ -231,31 +336,70 @@ function CaseFile({ p, onClose }: { p: Project; onClose: () => void }) {
       <div
         role="dialog" aria-modal="true" aria-label={p.title}
         onClick={(e) => e.stopPropagation()}
-        className="case-in grid max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-3xl border border-[#c9dcc6] bg-[#fffbf2] md:grid-cols-[1.1fr_1fr]"
+        className="case-in grid max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-3xl border border-[#c9dcc6] bg-[#fffbf2] grid-cols-[minmax(0,1fr)] md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]"
       >
-        <div className="bg-[#f1f6ef] p-4 sm:p-5">
-          <div className="aspect-[16/10] overflow-hidden rounded-md border border-[#c9dcc6]">
-            <a
-              href={p.shots[i]} target="_blank" rel="noreferrer" title="Open full size"
-              className="block aspect-[16/10] cursor-zoom-in overflow-hidden rounded-md border border-[#c9dcc6] bg-white"
-            >
-              <Shot key={p.shots[i]} src={p.shots[i]} alt={`${p.title} screenshot ${i + 1}`} fit="contain" />
-            </a>
-            <p className="mono mt-2 text-[11px] text-[#74687a]">Click the image to open it full size</p>
-          </div>
-          <div className="mt-3 flex gap-2">
-            {p.shots.map((s, n) => (
-              <button
-                key={s} onClick={() => setI(n)} aria-label={`Screenshot ${n + 1}`}
-                className={`h-14 w-24 overflow-hidden rounded border ${n === i ? "border-[#b9a5de]" : "border-[#c9dcc6] opacity-60 hover:opacity-100"}`}
+        <div className="min-w-0 bg-[#f1f6ef] p-4 sm:p-5">
+          {embed ? (
+            <div className="mb-3 flex gap-2">
+              {(["video", "shots"] as const).map((v) => (
+                <button
+                  key={v} onClick={() => setView(v)} aria-pressed={view === v}
+                  className={`mono rounded-full border-2 px-4 py-1.5 text-xs ${view === v ? "border-[#43343f] bg-[#fbeab0] text-[#43343f]" : "border-[#c9dcc6] text-[#74687a] hover:border-[#43343f]"}`}
+                >
+                  {v === "video" ? "Video demo" : `Screenshots (${total})`}
+                </button>
+              ))}
+            </div>
+          ) : null}
+
+          {view === "video" && embed ? (
+            <>
+              <div className="aspect-[16/10] overflow-hidden rounded-md border border-[#c9dcc6] bg-black">
+                <iframe
+                  src={embed} title={`${p.title} video demo`}
+                  allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowFullScreen
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  className="h-full w-full"
+                />
+              </div>
+              <p className="mono mt-2 text-[11px] text-[#74687a]">
+                Video not loading?{" "}
+                <a href={p.video} target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-[#4f7a5a]">Open the video in a new tab</a>
+              </p>
+            </>
+          ) : (
+            <>
+              <div
+                onPointerEnter={(e) => e.pointerType === "mouse" && setPaused(true)}
+                onPointerLeave={() => setPaused(false)}
               >
-                <Shot src={s} alt="" fallback={<div className="h-full w-full bg-[#e9f0f8]" />} />
-              </button>
-            ))}
-          </div>
+                <a
+                  href={p.shots[i]} target="_blank" rel="noreferrer" title="Open full size"
+                  className="block aspect-[16/10] cursor-zoom-in overflow-hidden rounded-md border border-[#c9dcc6] bg-white"
+                >
+                  <div key={p.shots[i]} className="fade-in h-full w-full">
+                    <Shot src={p.shots[i]} alt={`${p.title} screenshot ${i + 1}`} fit="contain" />
+                  </div>
+                </a>
+              </div>
+              <p className="mono mt-2 text-[11px] text-[#74687a]">
+                Click the image to open it full size{total > 1 ? ` · ${i + 1} / ${total} · hover to pause` : ""}
+              </p>
+              <div ref={thumbs} className="relative mt-3 flex gap-2 overflow-x-auto pb-2 [scrollbar-width:thin]">
+                {p.shots.map((s, n) => (
+                  <button
+                    key={s} onClick={() => setI(n)} aria-label={`Screenshot ${n + 1}`}
+                    className={`h-14 w-24 shrink-0 overflow-hidden rounded border ${n === i ? "border-[#b9a5de]" : "border-[#c9dcc6] opacity-60 hover:opacity-100"}`}
+                  >
+                    <Shot src={s} alt="" fallback={<div className="h-full w-full bg-[#e9f0f8]" />} />
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
-        <div className="p-6 sm:p-8">
+        <div className="min-w-0 p-6 sm:p-8">
           <div className="flex items-start justify-between gap-4">
             <p className="mono text-xs text-[#74687a]">{p.file} · {p.date}</p>
             <button onClick={onClose} autoFocus className="mono text-xs text-[#74687a] hover:text-[#4f7a5a]">Close (Esc)</button>
@@ -403,38 +547,38 @@ export default function Home() {
         {/* stack */}
         <section id="stack" className="scroll-mt-6 pt-20">
           <h2 className="script text-6xl leading-[1.15] text-[#7a62a8]">Stack</h2>
-          <div className="mt-8 space-y-8">
-            {Object.entries(stackGroups).map(([group, items]) => (
-              <div key={group}>
-                <h3 className="mono text-xs text-[#74687a]">{group}</h3>
-                <ul className="mt-3 flex flex-wrap gap-3">
-                  {items.map((s) => {
-                    const Icon = ICONS[s];
-                    return (
-                      <li key={s} className="flex w-[104px] flex-col items-center gap-2 rounded-2xl border border-[#c9dcc6] bg-[#ffffff] py-4 transition hover:border-[#b9a5de]">
-                        {Icon ? <Icon aria-hidden className="text-3xl" /> : null}
-                        <span className="mono text-[11px] text-[#74687a]">{s}</span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            ))}
+          <p className="serif mt-1 text-2xl text-[#74687a]">the little tools I keep in my toolbox ♡</p>
+          <div className="mt-10 grid gap-6 lg:grid-cols-3 lg:items-start">
+            <StackPanel name="Machine learning and data" />
+            <StackPanel name="Web and mobile" />
+            <StackPanel name="Design" />
           </div>
         </section>
 
-        <Pearls />
+        <LaceDivider />
 
         {/* contact */}
         <section id="contact" className="scroll-mt-6 pt-20">
           <h2 className="script text-6xl leading-[1.15] text-[#d0476f] sm:text-8xl">Open to internships. <Cherry className="inline-block h-10 w-10 align-middle sm:h-16 sm:w-16" /></h2>
           <p className="mt-5 max-w-xl text-[13px] leading-6 text-[#5c4a57]">
-            Machine learning, data analytics, or frontend. Before this I interned as a social media intern at Kompas Gramedia Radio Network (SmartFM, Jul - Sep 2023), producing reels and posts and assisting live video shoots.
+            Machine learning, data analytics, or frontend. Let&apos;s keep in touch! Feel free to check out my projects on GitHub, connect on LinkedIn, or reach out through my socials below.
           </p>
-          <div className="mono mt-8 flex flex-wrap gap-x-8 gap-y-3 text-sm">
-            <a href={`mailto:${EMAIL}`} className="underline decoration-[#b7cde8] underline-offset-4 hover:decoration-[#b9a5de]">{EMAIL}</a>
-            <a href={LINKEDIN} target="_blank" rel="noreferrer" className="underline decoration-[#b7cde8] underline-offset-4 hover:decoration-[#b9a5de]">LinkedIn</a>
-            <a href={GITHUB} target="_blank" rel="noreferrer" className="underline decoration-[#b7cde8] underline-offset-4 hover:decoration-[#b9a5de]">GitHub</a>
+          <div className="mono mt-8 flex flex-wrap gap-4 text-sm">
+            {[
+              { href: `mailto:${EMAIL}`, label: EMAIL, Icon: FaEnvelope, bg: "bg-[#fbeab0]", tilt: "-rotate-1", ext: false },
+              { href: LINKEDIN, label: "LinkedIn", Icon: FaLinkedinIn, bg: "bg-[#c4dcf3]", tilt: "rotate-1", ext: true },
+              { href: GITHUB, label: "GitHub", Icon: FaGithub, bg: "bg-[#d3e5d0]", tilt: "-rotate-1", ext: true },
+              { href: INSTAGRAM, label: "Instagram", Icon: FaInstagram, bg: "bg-[#f9c9d5]", tilt: "rotate-1", ext: true },
+            ].map(({ href, label, Icon, bg, tilt, ext }) => (
+              <a
+                key={label} href={href}
+                {...(ext ? { target: "_blank", rel: "noreferrer" } : {})}
+                className={`inline-flex items-center gap-2 rounded-full border-2 border-[#43343f] px-5 py-2.5 font-medium text-[#43343f] shadow-[3px_3px_0_#43343f] transition duration-200 hover:-translate-y-1 hover:rotate-0 ${bg} ${tilt}`}
+              >
+                <Icon aria-hidden className="text-base" />
+                {label}
+              </a>
+            ))}
           </div>
         </section>
 

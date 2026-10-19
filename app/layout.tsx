@@ -24,7 +24,7 @@ const body = Quicksand({
 export const metadata: Metadata = {
   title: "Brenda Anastasya | Machine Learning & Frontend",
   description:
-    "Informatics Engineering student building machine learning models and the interfaces around them.",
+    "Informatics Engineering student passionate about machine learning and data with a skill in design.",
 };
 
 export default function RootLayout({
